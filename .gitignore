@@ -1,4 +1,7 @@
 /target
+/node_modules
+/dist
+*.tgz
 **/*.rs.bk
 Cargo.lock
 bin/
