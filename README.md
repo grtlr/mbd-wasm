@@ -1,4 +1,4 @@
-# mbd-wasm
+# mbd-wasm ![.github/workflows/ci.yml](https://github.com/grtlr/trebleu/workflows/CI/badge.svg)
 
 A Rust implementation of the modified band depth that also compiles to WASM.
 
@@ -12,7 +12,7 @@ let mbd = ModifiedBandDepth::from_samples(&data);
 assert_eq!(mbd.query(&[2.0, 3.0, 4.0]), 1.0);
 ```
 
-## Publish
+## Publish to NPM
 
 ```sh
 yarn install
