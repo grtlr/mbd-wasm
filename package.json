@@ -1,6 +1,6 @@
 {
   "name": "mbd-wasm",
-  "version": "0.0.1",
+  "version": "0.0.0",
   "description": "Rust implementation of the modified band depth that also compiles to WASM.",
   "repository": "https://github.com/grtlr/mbd-wasm",
   "author": {
@@ -8,21 +8,21 @@
     "url": "https://www.jgoertler.com"
   },
   "license": "Apache-2.0",
-  "private": false,
-  "sideEffects": false,
-  "devDependencies": {
-    "@wasm-tool/rollup-plugin-rust": "^1.0.6",
-    "rollup": "^2.45.2",
-    "rollup-plugin-terser": "^7.0.2"
-  },
   "files": [
-    "dist"
+    "dist/bundler/mbd_bg.wasm",
+    "dist/bundler/mbd.js",
+    "dist/bundler/mbd.d.ts",
+    "dist/node/mbd_bg.wasm",
+    "dist/node/mbd.js",
+    "dist/node/mbd.d.ts",
+    "dist/web/mbd_bg.wasm",
+    "dist/web/mbd.js",
+    "dist/web/mbd.d.ts"
   ],
-  "main": "dist/mbd-wasm.cjs.js",
-  "module": "dist/mbd-wasm.js",
-  "unpkg": "dist/mbd-wasm.min.js",
-  "jsdelivr": "dist/mbd-wasm.min.js",
-  "scripts": {
-    "build": "rollup --config"
-  }
+  "main": "dist/node/mbd.js",
+  "module": "dist/bundler/mbd.js",
+  "types": "dist/bundler/mbd.d.ts",
+  "sideEffects": "false",
+  "unpkg": "dist/web/mbd.js",
+  "jsdelivr": "dist/web/mbd.js"
 }

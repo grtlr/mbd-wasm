@@ -12,9 +12,10 @@ let mbd = ModifiedBandDepth::from_samples(&data);
 assert_eq!(mbd.query(&[2.0, 3.0, 4.0]), 1.0);
 ```
 
-## Publish to NPM
+## Creating an NPM Package
 
 ```sh
-yarn install
-yarn run build
+wasm-pack build --target bundler --out-dir ./dist/bundler 
+wasm-pack build --target nodejs --out-dir ./dist/node
+wasm-pack build --target web --out-dir ./dist/web
 ```
