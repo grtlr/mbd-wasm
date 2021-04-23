@@ -27,7 +27,10 @@ export default [
             name: "mbd-wasm.cjs",
         },
         plugins: [
-            rust(),
+            rust({
+                nodejs: true,
+                inlineWasm: true,
+            }),
         ],
     },
     {
