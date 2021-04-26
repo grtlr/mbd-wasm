@@ -1,6 +1,6 @@
 [package]
 name = "mbd"
-version = "0.0.2"
+version = "0.0.3"
 authors = ["Jochen Görtler <web@goertler.email>"]
 edition = "2018"
 license = "Apache-2.0"

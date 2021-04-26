@@ -1,8 +1,9 @@
 {
   "name": "mbd-wasm",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Rust implementation of the modified band depth that also compiles to WASM.",
   "repository": "https://github.com/grtlr/mbd-wasm",
+  "homepage": "https://github.com/grtlr/mbd-wasm",
   "author": {
     "name": "Jochen Görtler",
     "url": "https://www.jgoertler.com"
