@@ -21,6 +21,8 @@ Similarly, you can call the the same functionality from JavaScript:
 ```js
 mbdWasm = (await require('mbd-wasm@0.0.4'))();
 const data = [[4.0, 5.0, 6.0], [1.0, 2.0, 3.0]]
+const num_samples = data.length;
+const num_timepoints = data[0].length;
 const mbd = mbdWasm.ModifiedBandDepth.from_data_matrix(num_samples, num_timepoints, data.flat());
 console.log(mbd.query([2.0, 3.0, 4.0])); // prints 1.0
 ```
