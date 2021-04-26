@@ -1,6 +1,6 @@
 {
   "name": "mbd-wasm",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Rust implementation of the modified band depth that also compiles to WASM.",
   "repository": "https://github.com/grtlr/mbd-wasm",
   "author": {

@@ -29,7 +29,6 @@ export default [
         plugins: [
             rust({
                 nodejs: true,
-                inlineWasm: true,
             }),
         ],
     },
@@ -44,7 +43,9 @@ export default [
             name: "mbd-wasm.min",
         },
         plugins: [
-            rust(),
+            rust({
+                inlineWasm: true,
+            }),
             terser(),
         ],
     }
