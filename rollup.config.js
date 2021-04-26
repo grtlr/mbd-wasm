@@ -41,7 +41,9 @@ export default [
             name: "mbd-wasm.min",
         },
         plugins: [
-            rust(),
+            rust({
+                inlineWasm: true,
+            }),
             terser({output: {preamble: copyright}}),
         ],
     }
