@@ -19,7 +19,7 @@ assert_eq!(mbd.query(&[2.0, 3.0, 4.0]), 1.0);
 Similarly, you can call the the same functionality from JavaScript:
 
 ```js
-mbdWasm = (await require('mbd-wasm@0.0.4'))();
+mbdWasm = (await require('mbd-wasm@0.1.0'))();
 const data = [[4.0, 5.0, 6.0], [1.0, 2.0, 3.0]]
 const num_samples = data.length;
 const num_timepoints = data[0].length;
