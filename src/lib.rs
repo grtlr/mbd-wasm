@@ -18,6 +18,8 @@ pub struct ModifiedBandDepth {
 
 #[wasm_bindgen]
 impl ModifiedBandDepth {
+    /// Constructs the modified band depth from a contiguous row-major `data_matrix`.
+    /// This means that each row of the matrix represents one functional.
     pub fn from_data_matrix(rows: usize, timepoints: usize, data_matrix: &[f32]) -> Self {
         let mut sorted_matrix = Vec::with_capacity(rows * timepoints);
         for j in 0..timepoints {
@@ -35,6 +37,18 @@ impl ModifiedBandDepth {
         }
     }
 
+    /// Computes the modified band depth for a given `sample`.
+    ///
+    /// # Example
+    /// ```
+    /// let data_matrix = [
+    ///     4.0, 5.0, 6.0,
+    ///     1.0, 2.0, 3.0
+    /// ];
+    /// let mbd = mbd::ModifiedBandDepth::from_data_matrix(2, 3, &data_matrix);
+    /// assert_eq!(mbd.query(&[2.0, 3.0, 4.0]), 1.0);
+    /// assert_eq!(mbd.query(&[5.0, 6.0, 7.0]), 0.0);
+    /// ```
     pub fn query(&self, sample: &[f32]) -> f32 {
         debug_assert_eq!(sample.len(), self.num_timepoints);
         let mut count = 0;
@@ -51,13 +65,14 @@ impl ModifiedBandDepth {
 }
 
 impl ModifiedBandDepth {
-    pub fn from_samples(rows: &Vec<Vec<f32>>) -> Self {
-        let num_samples = rows.len();
-        let num_timepoints = rows.first().unwrap().len();
+    /// Constructs the modified band depth from a set of `functionals`.
+    pub fn from_samples(functionals: &[Vec<f32>]) -> Self {
+        let num_samples = functionals.len();
+        let num_timepoints = functionals.first().unwrap().len();
         let mut data_matrix = Vec::with_capacity(num_samples * num_timepoints);
-        for j in 0..num_timepoints {
-            for i in 0..num_samples {
-                data_matrix.push(rows[i][j]);
+        for x in 0..num_timepoints {
+            for f in functionals {
+                data_matrix.push(f[x]);
             }
             data_matrix
                 .chunks_mut(num_samples)
@@ -81,28 +96,10 @@ fn binomial_choose_2(from: usize) -> usize {
 
 /// Counts how many elements are `(smaller, equal, larger)` to x
 fn partition(sorted_ys: &[f32], x: f32) -> (usize, usize, usize) {
-    match sorted_ys.binary_search_by(|e| e.partial_cmp(&x).unwrap()) {
-        Result::Err(i) => (i, 0, sorted_ys.len() - i),
-        Result::Ok(i) => {
-            let (lower, upper) = extents(sorted_ys, x, i);
-            (lower, upper - lower, sorted_ys.len() - upper)
-        }
-    }
-}
-
-/// The index found by binary search can be somewhere in the middle,
-/// so we need to look left and right to find the beginning and end
-/// index of the element that are equal to `x`.
-fn extents(sorted: &[f32], x: f32, i: usize) -> (usize, usize) {
-    let mut lower = i;
-    while lower > 0 && sorted[lower - 1] == x {
-        lower -= 1;
-    }
-    let mut upper = i + 1;
-    while upper < sorted.len() && sorted[upper] == x {
-        upper += 1;
-    }
-    (lower, upper)
+    let lt = sorted_ys.partition_point(|&y| y < x);
+    let eq = sorted_ys[lt..].partition_point(|&y| y <= x);
+    let gt = sorted_ys.len() - lt - eq;
+    (lt, eq, gt)
 }
 
 #[cfg(test)]
@@ -116,21 +113,6 @@ mod tests {
         assert_eq!(binomial_choose_2(3), 3);
         assert_eq!(binomial_choose_2(10_000), 49_995_000);
         assert_eq!(binomial_choose_2(10_001), 50_005_000);
-    }
-
-    #[test]
-    fn test_extents() {
-        let seq = [1.0, 1.0, 2.0, 3.0, 4.0, 4.0, 4.0, 5.0, 8.0, 9.0];
-        assert_eq!(extents(&seq, 4.0, 4), (4, 7));
-        assert_eq!(extents(&seq, 4.0, 5), (4, 7));
-        assert_eq!(extents(&seq, 4.0, 6), (4, 7));
-
-        assert_eq!(extents(&seq, 1.0, 0), (0, 2));
-        assert_eq!(extents(&seq, 1.0, 1), (0, 2));
-
-        assert_eq!(extents(&seq, 2.0, 2), (2, 3));
-
-        assert_eq!(extents(&seq, 9.0, 9), (9, 10));
     }
 
     #[test]
