@@ -1,0 +1,81 @@
+on: [release]
+
+name: Release
+
+jobs:
+  check:
+      name: Rust stable
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@v2
+
+        - name: Update toolchain
+          uses: actions-rs/toolchain@v1
+          with:
+            profile: minimal
+            toolchain: stable
+            override: true
+            components: rustfmt, clippy
+
+        - name: Cache cargo
+          uses: actions/cache@v2
+          with:
+            path: |
+              ~/.cargo/registry
+              ~/.cargo/git
+              target
+            key: ${{ runner.os }}-cargo-registry-${{ hashFiles('**/Cargo.lock') }}
+
+        - name: Run cargo check
+          uses: actions-rs/cargo@v1
+          with:
+            command: check
+
+        - name: Run cargo fmt
+          uses: actions-rs/cargo@v1
+          with:
+            command: fmt
+            args: --all -- --check
+
+        - name: Run cargo clippy
+          uses: actions-rs/cargo@v1
+          with:
+            command: clippy
+            args: -- -D warnings
+
+        - name: Run cargo build
+          uses: actions-rs/cargo@v1
+          with:
+            command: build
+
+        - name: Run cargo test
+          uses: actions-rs/cargo@v1
+          with:
+            command: test
+
+        - name: Install wasm-pack
+          run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
+
+        - name: Run wasm-pack test --node
+          run: wasm-pack test --node
+
+        - name: Login to crates.io
+          env:
+            CRATES_IO: ${{ secrets.CRATES_IO_TOKEN }}
+          run: cargo login "$CRATES_IO"
+
+        - name: Publish to crates.io
+          run: cargo publish
+
+        - name: Publish to NPM
+          env:
+            NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          uses: actions/setup-node@v2
+            with:
+              node-version: '12.x'
+              registry-url: 'https://registry.npmjs.org'
+          run: npm install
+          run: npm build
+          run: npm pack
+          run: npm publish
+
